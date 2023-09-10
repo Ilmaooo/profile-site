@@ -2,10 +2,11 @@ function Button() {
   const generatePDF = () => {
     window.print();
   };
+
   return (
     <button
       onClick={generatePDF}
-      className="absolute top-10 right-10 rounded-xl py-1 px-2 font-[montserrat] font-medium border-solid border-[#979191] bg-[#979191] text-white resize-block transition duration-400ms"
+      className="absolute top-12 right-10 rounded-xl py-1 px-3 font-[montserrat] font-medium border-solid border-[#979191] bg-[#979191] text-white tracking-wide md:mr-80"
     >
       Print Cv
     </button>

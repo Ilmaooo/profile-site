@@ -21,7 +21,7 @@ function App() {
   }, []);
 
   return (
-    <div className="object-cover bg-white relative w-full sm:max-w-screen-xl mx-auto box-border flex flex-col h-auto my-10 px-5 ">
+    <div className="object-cover bg-white relative w-full sm:max-w-screen-xl mx-auto box-border flex flex-col h-auto my-10 px-5 py-5 sm:px-11 sm:py-11">
       <Fade cascade direction="top" duration={2000} triggerOnce={animateOnLoad}>
         <Header />
       </Fade>

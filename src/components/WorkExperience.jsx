@@ -37,23 +37,28 @@ export default function WorkExperience() {
           style={summary}
         >
           <Typography style={customStyle}>
-            IDK Studio d.o.o{" "}
-            <span className=" font-extralight text-xs">( Aug - Sep 2023 )</span>
+            Microsoft{" "}
+            <span className=" font-extralight text-xs">( 2020 - present )</span>
             <br />
-            <p className="font-extralight text-xs mt-2">Web Developer</p>
+            <p className="font-extralight text-xs mt-2">
+              Ceo, Product owner & Tech Lead
+            </p>
           </Typography>
         </AccordionSummary>
         <AccordionDetails style={details}>
           <div className=" font-normal text-[#484545] text-sm">
-            <h3>Web developer intern</h3>
+            <h3>Details about your position some more details...</h3>
             <h3>List of projects:</h3>
             <ul className=" indent-3">
-              <li>- App for sharing recipes, database MySQL, backend PHP</li>
+              <li>
+                - Resume website ( you are currently on this website, it was
+                built in 3 days )
+              </li>
             </ul>
             <h3>Some of the challenges I had to overcome:</h3>
             <ul className="  indent-3">
-              <li>- Learning new technologies</li>
-              <li>- Figure out ...</li>
+              <li>- implement it in react</li>
+              <li>- Figure out firebase</li>
             </ul>
           </div>
         </AccordionDetails>
@@ -67,11 +72,11 @@ export default function WorkExperience() {
           style={summary}
         >
           <Typography style={customStyle}>
-            Microsoft{" "}
+            Other company{" "}
             <span className=" font-extralight text-xs">( 2020 - present )</span>
             <br />
             <p className="font-extralight text-xs mt-2">
-              Ceo, Product owner & Tech Lead
+              Consultant and Full Stack Developer
             </p>
           </Typography>
         </AccordionSummary>
