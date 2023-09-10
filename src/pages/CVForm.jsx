@@ -6,8 +6,13 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AddIcon from "@mui/icons-material/Add";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { db } from "../../firebase";
+import { collection, getDoc, doc, setDoc } from "firebase/firestore";
 
 function CVForm() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [experiences, setExperiences] = useState([
     { title: "", subtitle: "", description: "", timeRange: "" },
   ]);
@@ -114,14 +119,60 @@ function CVForm() {
     setLanguages(updatedLanguages);
   };
 
-  /*   const handleSubmit = (e) => {
+  //send data to firebase
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission, e.g., sending data to Firebase or elsewhere
-  }; */
+
+    try {
+      setIsLoading(true);
+      const collectionRef = collection(db, "resumes");
+      const fullName = e.target.fullName.value;
+
+      const data = {
+        fullName: e.target.fullName.value,
+        email: e.target.email.value,
+        currentPosition: e.target.currentPosition.value,
+        phoneNumber: e.target.phoneNumber.value,
+        experiences: experiences.map((experience) => ({
+          title: experience.title,
+          description: experience.description,
+          timeRange: experience.timeRange,
+        })),
+        education: educations.map((education) => ({
+          school: education.school,
+          degree: education.degree,
+          field: education.fieldOfStudy,
+          year: education.graduationYear,
+        })),
+        technicalSkills: technicalSkills,
+        softSkills: softSkills,
+        languages: languages,
+      };
+
+      const docRef = doc(collectionRef, fullName);
+
+      await setDoc(docRef, data);
+
+      const docSnapshot = await getDoc(docRef);
+      const docID = docSnapshot.id;
+      e.target.reset();
+      setSuccessMessage(`Data uploaded successfully! Document ID: ${docID}`);
+      setErrorMessage(""); // Clear any previous error message
+    } catch (error) {
+      console.error("Error submitting the form:", error);
+      setErrorMessage("Error uploading data. Please try again.");
+      setSuccessMessage(""); // Clear any previous success message
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen min-w-screen  p-0 m-0">
-      <div className="container bg-white shadow-lg rounded px-8 pt-6 pb-8 mb-4 w-[500px] mx-auto my-20">
+      <form
+        onSubmit={handleSubmit}
+        className="container bg-white shadow-lg rounded px-8 pt-6 pb-8 mb-4 w-[500px] mx-auto my-20"
+      >
         {/*personal info*/}
         <div>
           <h1 className="text-[#948E8E] font-medium mb-2 mx-auto uppercase tracking-wide text-base font-[montserrat] ">
@@ -133,6 +184,7 @@ function CVForm() {
               variant="outlined"
               fullWidth
               size="small"
+              name="fullName"
             />
           </div>
           <div className="mb-2">
@@ -141,6 +193,7 @@ function CVForm() {
               variant="outlined"
               fullWidth
               size="small"
+              name="email"
             />
           </div>
           <div className="mb-2">
@@ -149,6 +202,7 @@ function CVForm() {
               variant="outlined"
               fullWidth
               size="small"
+              name="currentPosition"
             />
           </div>
           <div className="mb-2">
@@ -157,6 +211,7 @@ function CVForm() {
               variant="outlined"
               fullWidth
               size="small"
+              name="phoneNumber"
             />
           </div>
         </div>
@@ -173,6 +228,7 @@ function CVForm() {
                   label="Work Title"
                   variant="outlined"
                   fullWidth
+                  name="title"
                   size="small"
                   value={experience.title}
                   onChange={(e) =>
@@ -186,6 +242,7 @@ function CVForm() {
                   variant="outlined"
                   fullWidth
                   multiline
+                  name="description"
                   size="small"
                   rows={3}
                   value={experience.description}
@@ -199,6 +256,7 @@ function CVForm() {
                   label="Time Range"
                   variant="outlined"
                   fullWidth
+                  name="timeRange"
                   size="small"
                   value={experience.timeRange}
                   onChange={(e) =>
@@ -244,6 +302,7 @@ function CVForm() {
                   label="School/University Name"
                   variant="outlined"
                   fullWidth
+                  name="school"
                   size="small"
                   value={education.school}
                   onChange={(e) =>
@@ -256,6 +315,7 @@ function CVForm() {
                   label="Degree"
                   variant="outlined"
                   fullWidth
+                  name="degree"
                   size="small"
                   value={education.degree}
                   onChange={(e) =>
@@ -268,6 +328,7 @@ function CVForm() {
                   label="Field of Study"
                   variant="outlined"
                   fullWidth
+                  name="fieldOfStudy"
                   size="small"
                   value={education.fieldOfStudy}
                   onChange={(e) =>
@@ -280,6 +341,7 @@ function CVForm() {
                   label="Graduation Year"
                   variant="outlined"
                   fullWidth
+                  name="graduationYear"
                   size="small"
                   value={education.graduationYear}
                   onChange={(e) =>
@@ -451,6 +513,17 @@ function CVForm() {
           />
         </div>
 
+        {/* Success/Error Message */}
+        {successMessage && (
+          <div className="text-green-500 mb-2">{successMessage}</div>
+        )}
+        {errorMessage && (
+          <div className="text-red-500 mb-2">{errorMessage}</div>
+        )}
+
+        {/* Loading Indicator */}
+        {isLoading && <div className="text-blue-500 mb-2">Uploading...</div>}
+
         <div className="flex items-center justify-between">
           <Button
             variant="outlined"
@@ -469,7 +542,7 @@ function CVForm() {
             </IconButton>
           </Link>
         </div>
-      </div>
+      </form>
     </div>
   );
 }
