@@ -2,7 +2,7 @@ function Skills() {
   return (
     <div>
       <div>
-        <h2 className="text-[#948E8E] uppercase text-2xl font-medium font-[montserrat]  tracking-wide mt-10 mb-5">
+        <h2 className="text-[#948E8E] uppercase text-xl sm:text-2xl  mt-10  tracking-wide mb-5 font-medium font-[montserrat]">
           key technical skills
         </h2>
         <ul className="text-[#484545] font-medium">
