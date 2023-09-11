@@ -51,7 +51,7 @@ export default function WorkExperience({
         <AccordionDetails style={details}>
           <div className=" font-normal text-[#484545] text-sm">
             <h3>Desctiprion, projects, issues:</h3>
-            <textarea>{description}</textarea>
+            <div>{description}</div>
           </div>
         </AccordionDetails>
       </Accordion>
