@@ -9,7 +9,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Template />} />
         <Route path="/add-cv-data" element={<CVForm />} />
-        <Route path="/add-cv-data/:id" element={<NewCv />} />
+        <Route path="/add-cv-data/:docID" element={<NewCv />} />
       </Routes>
     </Router>
   );

@@ -5,11 +5,13 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AddIcon from "@mui/icons-material/Add";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
 import { db } from "../../firebase";
 import { collection, getDoc, doc, setDoc } from "firebase/firestore";
 
 function CVForm() {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -23,6 +25,7 @@ function CVForm() {
   const [technicalSkills, setTechnicalSkills] = useState([""]);
   const [softSkills, setSoftSkills] = useState([""]);
   const [languages, setLanguages] = useState([""]);
+  const [docID, setDocID] = useState("");
 
   const addExperience = () => {
     setExperiences([
@@ -128,12 +131,16 @@ function CVForm() {
       const collectionRef = collection(db, "resumes");
       const fullName = e.target.fullName.value;
 
+      const docID = fullName.replace(/\s+/g, "-").toLowerCase();
+
       const data = {
         fullName: e.target.fullName.value,
         email: e.target.email.value,
         currentPosition: e.target.currentPosition.value,
         phoneNumber: e.target.phoneNumber.value,
+        about: e.target.about.value,
         experiences: experiences.map((experience) => ({
+          company: experience.company,
           title: experience.title,
           description: experience.description,
           timeRange: experience.timeRange,
@@ -149,19 +156,22 @@ function CVForm() {
         languages: languages,
       };
 
-      const docRef = doc(collectionRef, fullName);
+      const docRef = doc(collectionRef, docID);
 
       await setDoc(docRef, data);
 
       const docSnapshot = await getDoc(docRef);
-      const docID = docSnapshot.id;
-      e.target.reset();
+      const newDocID = docSnapshot.id;
+      setDocID(newDocID);
+
       setSuccessMessage(`Data uploaded successfully! Document ID: ${docID}`);
-      setErrorMessage(""); // Clear any previous error message
+      setErrorMessage("");
+
+      navigate(`/add-cv-data/${docID}`);
     } catch (error) {
       console.error("Error submitting the form:", error);
       setErrorMessage("Error uploading data. Please try again.");
-      setSuccessMessage(""); // Clear any previous success message
+      setSuccessMessage("");
     } finally {
       setIsLoading(false);
     }
@@ -225,6 +235,19 @@ function CVForm() {
               </h1>
               <div className="mb-2">
                 <TextField
+                  label="Company"
+                  variant="outlined"
+                  fullWidth
+                  name="company"
+                  size="small"
+                  value={experience.company}
+                  onChange={(e) =>
+                    handleExperienceChange(index, "company", e.target.value)
+                  }
+                />
+              </div>
+              <div className="mb-2">
+                <TextField
                   label="Work Title"
                   variant="outlined"
                   fullWidth
@@ -242,6 +265,7 @@ function CVForm() {
                   variant="outlined"
                   fullWidth
                   multiline
+                  placeholder="Tell us about your projects and issues you had to overcome"
                   name="description"
                   size="small"
                   rows={3}
@@ -507,6 +531,7 @@ function CVForm() {
             label="About you"
             variant="outlined"
             multiline
+            name="about"
             rows={3}
             fullWidth
             size="small"
@@ -532,6 +557,7 @@ function CVForm() {
           >
             Submit
           </Button>
+
           <Link to="/">
             <IconButton
               color="primary"
